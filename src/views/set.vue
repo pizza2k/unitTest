@@ -1,98 +1,105 @@
 <template>
     <div class="el-menu">
-        <headMenu :my_index="2"></headMenu>
-    </div>
-
+        <headMenu :my_index="2"></headMenu>
+    </div>
     <div class="config-editor">
-     
-      <div class="config-sections">
-        <!-- 核心参数 -->
-        <section class="config-section">
-          <h2>核心参数</h2>
-          <div class="form-group">
-            <label for="language-mode">语言模式:</label>
-            <select id="language-mode" v-model="config.LANGUAGE_MODE">
-              <option value="cpp">C++</option>
-              <option value="c">C</option>
-              <option value="python">Python</option>
-            </select>
-          </div>
+      
+      
+      <div class="main-layout">
+        <!-- 左侧：参数配置区 -->
+        <div class="config-column">
+          <!-- 核心参数 -->
+          <section class="config-section">
+            <h2>核心参数</h2>
+            <div class="form-group">
+              <label for="language-mode">语言模式:</label>
+              <select id="language-mode" v-model="config.LANGUAGE_MODE">
+                <option value="cpp">C++</option>
+                <option value="c">C</option>
+                <option value="python">Python</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label for="test-framework">测试框架:</label>
+              <select id="test-framework" v-model="config.UNITTEST_FRAMEWORK">
+                <option value="Unity">Unity</option>
+                <option value="Google Test">Google Test</option>
+                <option value="Catch2">Catch2</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label for="threshold">相似度阈值 ({{ config.REFERENCE_THRESHOLD }}):</label>
+              <input 
+                id="threshold" 
+                type="range" 
+                min="0" 
+                max="1" 
+                step="0.05" 
+                v-model.number="config.REFERENCE_THRESHOLD"
+              >
+            </div>
+          </section>
           
-          <div class="form-group">
-            <label for="test-framework">测试框架:</label>
-            <select id="test-framework" v-model="config.UNITTEST_FRAMEWORK">
-              <option value="Unity">Unity</option>
-              <option value="Google Test">Google Test</option>
-              <option value="Catch2">Catch2</option>
-            </select>
-          </div>
-          
-          <div class="form-group">
-            <label for="threshold">相似度阈值 ({{ config.REFERENCE_THRESHOLD }}):</label>
-            <input 
-              id="threshold" 
-              type="range" 
-              min="0" 
-              max="1" 
-              step="0.05" 
-              v-model.number="config.REFERENCE_THRESHOLD"
-            >
-          </div>
-        </section>
+          <!-- 路径配置 -->
+          <section class="config-section">
+            <h2>路径配置</h2>
+            <div class="form-group">
+              <label for="repo-path">代码仓库路径:</label>
+              <div class="path-input-group">
+                <input id="repo-path" type="text" v-model="config.REPO_PATH" readonly>
+                <button @click="openDirectoryPicker('REPO_PATH')">浏览</button>
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label for="log-dir">日志目录:</label>
+              <div class="path-input-group">
+                <input id="log-dir" type="text" v-model="config.LOG_DIR" readonly>
+                <button @click="openDirectoryPicker('LOG_DIR')">浏览</button>
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label>排除路径 (每行一个):</label>
+              <textarea v-model="excludedPathsText" rows="3"></textarea>
+            </div>
+          </section>
+        </div>
         
-        <!-- 路径配置 -->
-        <section class="config-section">
-          <h2>路径配置</h2>
-          <div class="form-group">
-            <label for="repo-path">代码仓库路径:</label>
-            <input id="repo-path" type="text" v-model="config.REPO_PATH">
-            <!-- <button @click="selectDirectory('REPO_PATH')">浏览</button> -->
-            <button @click="openDirectoryPicker('REPO_PATH')">浏览</button>
-            <input 
-                type="file" 
-                ref="directoryInput"
-                style="display: none"
-                webkitdirectory
-                @change="handleDirectorySelected"
-            >
-          </div>
-          
-          <div class="form-group">
-            <label for="log-dir">日志目录:</label>
-            <input id="log-dir" type="text" v-model="config.LOG_DIR">
-            <button @click="selectDirectory('LOG_DIR')">浏览</button>
-          </div>
-          
-          <div class="form-group">
-            <label>排除路径 (每行一个):</label>
-            <textarea v-model="excludedPathsText" rows="3"></textarea>
-          </div>
-        </section>
+        <!-- 右侧：配置预览区 -->
+        <div class="preview-column">
+          <section class="preview-section">
+            <h2>配置预览</h2>
+            <pre>{{ formattedConfig }}</pre>
+          </section>
+        </div>
       </div>
       
-      <!-- 配置预览 -->
-      <section class="preview-section">
-        <h2>配置预览</h2>
-        <pre>{{ formattedConfig }}</pre>
-      </section>
-      
-
       <!-- 操作按钮 -->
       <div class="action-buttons">
         <button @click="saveConfig" class="save-btn">保存配置</button>
         <button @click="resetConfig" class="reset-btn">重置</button>
         <button @click="exportConfig" class="export-btn">导出为文件</button>
       </div>
+  
+      <!-- 隐藏的文件输入 -->
+      <input 
+        type="file" 
+        ref="directoryInput"
+        style="display: none"
+        webkitdirectory
+        @change="handleDirectorySelected"
+      >
     </div>
   </template>
   
-<script setup>
-import { ref, computed, onMounted } from 'vue';
-
-import headMenu from '../components/head-menu.vue';
-
+  <script setup>
+  import { ref, computed, onMounted } from 'vue'
+  import headMenu from '../components/head-menu.vue';
   
-  // 默认配置（已修正所有路径字符串格式）
+  // 默认配置
   const defaultConfig = {
     LANGUAGE_MODE: "cpp",
     LOG_DIR: "D:\\Code\\UnitTestGen\\logs",
@@ -115,6 +122,8 @@ import headMenu from '../components/head-menu.vue';
   }
   
   const config = ref(JSON.parse(JSON.stringify(defaultConfig)))
+  const directoryInput = ref(null)
+  const currentPathField = ref('')
   
   // 处理排除路径的文本格式
   const excludedPathsText = computed({
@@ -129,31 +138,24 @@ import headMenu from '../components/head-menu.vue';
     return JSON.stringify(config.value, null, 2)
   })
   
-  // 选择目录
-  const selectDirectory = (field) => {
-    console.log(`选择目录: ${field}`)
-    // 实际应用中这里应该调用文件选择对话框
-    alert('在实际应用中会打开目录选择对话框')
+  // 打开目录选择器
+  const openDirectoryPicker = (field) => {
+    currentPathField.value = field
+    directoryInput.value.click()
   }
   
-  // 打开目录选择器
-const openDirectoryPicker = (field) => {
-  currentPathField.value = field
-  directoryInput.value.click()
-}
-
-// 处理目录选择
-const handleDirectorySelected = (event) => {
-  const files = event.target.files
-  if (files.length > 0) {
-    // 获取选择的目录路径
-    const path = files[0].path || files[0].webkitRelativePath.split('/')[0]
-    config.value[currentPathField.value] = path
+  // 处理目录选择
+  const handleDirectorySelected = (event) => {
+    const files = event.target.files
+    if (files.length > 0) {
+      // 获取选择的目录路径
+      const path = files[0].path || files[0].webkitRelativePath.split('/')[0]
+      config.value[currentPathField.value] = path
+    }
+    // 重置input，以便可以再次选择同一目录
+    event.target.value = ''
   }
-  // 重置input，以便可以再次选择同一目录
-  event.target.value = ''
-}
-
+  
   // 保存配置
   const saveConfig = () => {
     console.log('保存配置:', config.value)
@@ -190,84 +192,116 @@ const handleDirectorySelected = (event) => {
   
   <style scoped>
   .config-editor {
-    max-width: 900px;
+    max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
     font-family: Arial, sans-serif;
   }
   
-  .el-menu {
-    margin-top: 3vh; 
-    margin-bottom: 5vh;
-}
-
-  .config-sections {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
+  .main-layout {
+    display: flex;
+    gap: 30px;
+  }
+  
+  .config-column {
+    flex: 1;
+    min-width: 0;
+  }
+  
+  .preview-column {
+    flex: 1;
+    min-width: 0;
   }
   
   .config-section {
     background: #f5f5f5;
-    padding: 15px;
+    padding: 20px;
     border-radius: 8px;
-    margin-bottom: 20px;
+    margin-bottom: 25px;
   }
   
   .form-group {
-    margin-bottom: 15px;
+    margin-bottom: 18px;
   }
   
   label {
     display: block;
-    margin-bottom: 5px;
+    margin-bottom: 8px;
     font-weight: bold;
+    font-size: 14px;
   }
   
   input[type="text"],
   select,
   textarea {
     width: 100%;
-    padding: 8px;
+    padding: 10px;
     border: 1px solid #ddd;
     border-radius: 4px;
+    font-size: 14px;
+  }
+  
+  .path-input-group {
+    display: flex;
+    gap: 8px;
+  }
+  
+  .path-input-group input {
+    flex: 1;
+  }
+  
+  .path-input-group button {
+    padding: 0 15px;
   }
   
   textarea {
-    min-height: 80px;
+    min-height: 100px;
+    resize: vertical;
   }
   
   input[type="range"] {
     width: 100%;
+    margin-top: 5px;
   }
   
   .preview-section {
     background: #f0f0f0;
-    padding: 15px;
+    padding: 20px;
     border-radius: 8px;
-    margin-top: 20px;
+    height: calc(100% - 40px);
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .preview-section h2 {
+    margin-top: 0;
   }
   
   pre {
     white-space: pre-wrap;
     background: white;
-    padding: 10px;
+    padding: 15px;
     border-radius: 4px;
-    max-height: 300px;
+    flex-grow: 1;
     overflow-y: auto;
+    font-size: 13px;
+    line-height: 1.4;
   }
   
   .action-buttons {
     display: flex;
-    gap: 10px;
-    margin-top: 20px;
+    gap: 12px;
+    margin-top: 25px;
+    justify-content: center;
   }
   
   button {
-    padding: 8px 15px;
+    padding: 10px 20px;
     border: none;
     border-radius: 4px;
     cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.2s;
   }
   
   .save-btn {
