@@ -1,7 +1,5 @@
 <script setup>
 import headMenu from '../components/head-menu.vue';
-
-
 </script>
 
 <template>

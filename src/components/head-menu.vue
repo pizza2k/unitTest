@@ -18,7 +18,7 @@
             <router-link :to="{ name: 'main' }">首页</router-link>
         </el-menu-item>
         <el-menu-item index="2">
-            <router-link :to="{ name: 'list' }">模型页</router-link>
+            <router-link :to="{ name: 'set' }">配置页</router-link>
         </el-menu-item>
     </el-menu>
 </template>
@@ -34,12 +34,12 @@ import { ref } from 'vue'
 
 const activeIndex = ref(props.my_index.toString())
 const handleSelect = (index) => {
-  console.log('Selected index:', index);
+    console.log('Selected index:', index);
 }
 </script>
 
 <style>
 .el-menu--horizontal > .el-menu-item:nth-child(1) {
-  margin-right: auto;
+    margin-right: auto;
 }
 </style>
