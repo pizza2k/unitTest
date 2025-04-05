@@ -1,7 +1,10 @@
 <template>
+    <div class="el-menu">
+        <headMenu :my_index="2"></headMenu>
+    </div>
+
     <div class="config-editor">
-      <h1>相关参数配置</h1>
-      
+     
       <div class="config-sections">
         <!-- 核心参数 -->
         <section class="config-section">
@@ -83,8 +86,11 @@
     </div>
   </template>
   
-  <script setup>
-  import { ref, computed, onMounted } from 'vue'
+<script setup>
+import { ref, computed, onMounted } from 'vue';
+
+import headMenu from '../components/head-menu.vue';
+
   
   // 默认配置（已修正所有路径字符串格式）
   const defaultConfig = {
@@ -190,6 +196,11 @@ const handleDirectorySelected = (event) => {
     font-family: Arial, sans-serif;
   }
   
+  .el-menu {
+    margin-top: 3vh; 
+    margin-bottom: 5vh;
+}
+
   .config-sections {
     display: grid;
     grid-template-columns: 1fr 1fr;
