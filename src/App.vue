@@ -1,20 +1,14 @@
 <script setup>
-
-import HeadMenu from "@/components/head-menu.vue";
+import headMenu from "./components/head-menu.vue";
 </script>
 
 <template>
-    <div class="el-menu">
-        <headMenu :my_index="1">
-            <router-view></router-view>
-        </headMenu>
+    <div class="flex flex-col h-full w-full">
+        <headMenu :my_index="1" class="w-full"/>
+        <router-view/>
     </div>
 </template>
 
 <style>
-#app {
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-}
+
 </style>

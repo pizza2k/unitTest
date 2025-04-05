@@ -1,12 +1,9 @@
 <script setup>
-import headMenu from '../components/head-menu.vue';
 </script>
 
 <template>
+qweqwe
 </template>
 <style>
-html, body {
-    height: 100%;
-    margin: 0;
-}
+
 </style>
