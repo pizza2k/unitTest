@@ -1,6 +1,5 @@
 <template>
-    <div class="json-demo-page">
-      
+<!--    <div class="w-full h-full json-demo-page">-->
       <!-- 示例1：直接绑定数据 -->
       <!-- <button @click="showJsonViewer1" class="demo-btn">
         显示示例JSON数据
@@ -18,12 +17,12 @@
         title="自定义标题"
         @close="handleClose"
       />
-    </div>
+<!--    </div>-->
   </template>
   
   <script setup>
   import { ref } from 'vue'
-  import JsonViewer from '../components/json-show.vue'
+  import JsonViewer from './json-show.vue'
   
   const jsonViewerRef = ref(null)
   const jsonData = ref(null)
@@ -66,7 +65,6 @@
   <style scoped>
   .json-demo-page {
     padding: 20px;
-    max-width: 800px;
     margin: 0 auto;
   }
   

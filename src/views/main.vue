@@ -1,9 +1,9 @@
 <template>
-    <div class="min-h-screen place-content-center flex justify-center items-center">
+    <div class="min-h-screen w-screen place-content-center flex justify-center items-center">
         <div class="w-3/5 h-full mx-auto bg-white rounded-2xl shadow-lg p-8 space-y-6 mb-10">
-            <div class="flex items-center">
+            <div class="flex items-center pl-25">
                 <img src="../../public/icon/icon.png" alt="LOGO" class="w-48">
-                <h1 class="text-3xl font-bold text-center pt-8">AeroTest 航享智测</h1>
+                <h1 class="text-3xl font-bold text-center pt-8">AeroTest 航宇智测</h1>
             </div>
             <div class="space-y-4">
                 <!-- 仓库路径 -->
@@ -16,7 +16,7 @@
                             class="flex-1 border rounded-lg px-3 py-2"
                             placeholder="请输入路径"
                         />
-                        <label class="cursor-pointer bg-gray-300 px-3 py-1 rounded hover:bg-gray-400">
+                        <label class="cursor-pointer h-10 bg-base-300 px-3 pt-2 rounded hover:bg-blue-400">
                             📁
                             <input type="file" @change="handleFileUpload" multiple class="hidden"/>
                         </label>
@@ -83,7 +83,7 @@
                     </div>
                     <div class="drawer-side">
                         <label for="my-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
-                        <ul class="menu bg-base-200 text-base-content min-h-full w-3/4 p-4">
+                        <ul class="menu bg-white w-3/4 p-4">
                             <!-- 插入设置组件 -->
                             <Settings/>
                         </ul>
@@ -91,15 +91,17 @@
                 </div>
                 <!-- 开始分析按钮 -->
                 <div>
-                    <el-button class="bg-blue-600 text-white px-6 py-2 rounded-xl hover:bg-blue-700">
-                        开始分析
-                    </el-button>
+                    <router-link to="result">
+                        <el-button class="bg-blue-600 text-white px-6 py-2 rounded-xl hover:bg-blue-700">
+                            开始分析
+                        </el-button>
+                    </router-link>
+
                 </div>
             </div>
         </div>
-
-
     </div>
+
 </template>
 
 <script setup>
@@ -125,21 +127,3 @@ const removeFile = (index) => {
     files.value.splice(index, 1)
 }
 </script>
-
-<style>
-
-
-/* 梯形按钮样式 */
-.trapezoid-button {
-    position: relative;
-    color: white;
-    background-color: #6366f1;
-    padding: 0.75rem 2rem;
-    clip-path: polygon(25% 0, 100% 0, 75% 100%, 0% 100%);
-    transition: background-color 0.3s;
-}
-
-.trapezoid-button:hover {
-    background-color: #4f46e5;
-}
-</style>
