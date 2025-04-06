@@ -1,6 +1,6 @@
 <template>
     <el-menu
-        style="background-color: rgb(179,205,236);"
+        style="background-color: rgb(255,255,255);"
         :default-active="activeIndex"
         class="el-menu-demo"
         mode="horizontal"

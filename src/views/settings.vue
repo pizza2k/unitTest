@@ -1,10 +1,7 @@
 <template>
     <div class="flex flex-col h-full justify-between">
-        <div class="el-menu">
-            <headMenu :my_index="2"></headMenu>
-        </div>
-        <div class="config-editor w-full grow place-content-center backdrop-blur-lg">
-            <div class="main-layout px-20">
+        <div class="config-editor w-full grow place-content-center">
+            <div class="main-layout">
                 <!-- 左侧：参数配置区 -->
                 <div class="config-column">
                     <!-- 核心参数 -->
@@ -215,7 +212,6 @@ onMounted(() => {
 
 <style scoped>
 .config-editor {
-    margin: 10px;
     font-family: Arial, sans-serif;
 }
 
@@ -358,137 +354,3 @@ button:hover {
     opacity: 0.9;
 }
 </style>
-
-<!-- <style scoped>
-
-
-.config-editor {
-    margin: 10px;
-    font-family: Arial, sans-serif;
-}
-
-.main-layout {
-    display: flex;
-    gap: 30px;
-}
-
-.config-column {
-    flex: 1;
-    min-width: 0;
-}
-
-.preview-column {
-    flex: 1;
-    min-width: 0;
-}
-
-.config-section {
-    background: #deebf9;
-    padding: 20px;
-    border-radius: 8px;
-    margin-bottom: 25px;
-}
-
-.form-group {
-    margin-bottom: 18px;
-}
-
-label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: bold;
-    font-size: 14px;
-}
-
-input[type="text"],
-select,
-textarea {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #8f4d4d;
-    border-radius: 4px;
-    font-size: 14px;
-}
-
-.path-input-group {
-    display: flex;
-    gap: 8px;
-}
-
-.path-input-group input {
-    flex: 1;
-}
-
-.path-input-group button {
-    padding: 0 15px;
-}
-
-textarea {
-    min-height: 100px;
-    resize: vertical;
-}
-
-input[type="range"] {
-    width: 100%;
-    margin-top: 5px;
-}
-
-.preview-section {
-    background: #c9d5d6;
-    padding: 20px;
-    border-radius: 8px;
-    height: calc(100% - 40px);
-    display: flex;
-    flex-direction: column;
-}
-
-.preview-section h2 {
-    margin-top: 0;
-}
-
-pre {
-    white-space: pre-wrap;
-    background: white;
-    padding: 15px;
-    border-radius: 4px;
-    flex-grow: 1;
-    overflow-y: auto;
-    font-size: 13px;
-    line-height: 1.4;
-}
-
-.action-buttons {
-    display: flex;
-    gap: 12px;
-    margin-top: 25px;
-    justify-content: center;
-}
-
-button {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 14px;
-    transition: background-color 0.2s;
-}
-
-.save-btn {
-    background: #4CAF50;
-    color: white;
-}
-
-.reset-btn {
-    background: #f44336;
-    color: white;
-}
-
-.export-btn {
-    background: #2196F3;
-    color: white;
-}
-
-button:hover {
-    opacity: 0.9;
-}
-</style> -->
