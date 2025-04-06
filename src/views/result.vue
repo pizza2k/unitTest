@@ -1,9 +1,9 @@
 <template>
     <div class="w-full h-full">
         <div class="w-full h-full flex  flex-col px-30 justify-center  backdrop-blur-lg">
-            <div class="absolute top-12 right-1/5 flex items-center justify-center">
+            <div class="absolute top-12 right-1/3 flex items-center justify-center">
                 <img src="../../public/icon/icon.png" alt="LOGO" class="w-28">
-                <h1 class="text-md font-bold text-center pt-8">AeroTest 航宇智测</h1>
+                <h1 class="text-md font-bold text-center pt-8 text-black">AeroTest 航宇智测</h1>
             </div>
             <div class="flex flex-col h-2/3 mt-12">
                 <!-- 返回按钮 -->
