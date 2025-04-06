@@ -9,8 +9,8 @@
     >
         <el-menu-item index="0">
             <img
-                style="height: 50px"
-                src="/img/home/vite.svg"
+                style="height: 166px"
+                src="/img/home/qiqi.png"
                 alt="logo"
             />
         </el-menu-item>
