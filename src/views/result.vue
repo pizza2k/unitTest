@@ -2,18 +2,22 @@
     <div class="w-full h-full">
         <div class="w-full h-full flex flex-col px-30 justify-center backdrop-blur-lg">
             <div class="absolute top-12 right-1/3 flex items-center justify-center">
-                <img src="../../public/icon/icon.png" alt="LOGO" class="w-28">
-                <h1 class="text-md font-bold text-center pt-8 text-black">AeroTest 航宇智测</h1>
+                <div class="backdrop-blur-lg bg-white w-28 rounded-2xl mr-5 pr-2 mt-6">
+                    <img src="../../public/icon/icon.png" alt="LOGO"
+                         class="w-28"/>
+                </div>
+                <h1 class="hidden xl:block text-md font-bold text-center pt-8 text-black">AeroTest</h1>
+                <h1 class="hidden md:block text-md font-bold text-center pt-8 text-black">航宇智测</h1>
             </div>
             <div class="flex flex-col h-2/3 mt-12">
                 <!-- 返回按钮 -->
                 <el-button @click="goBack"
-                    class="shadow-2xl justify-left flex w-16 items-center text-gray-600 hover:text-gray-900 mb-4 transition-colors">
+                           class="shadow-2xl justify-left flex w-16 items-center text-gray-600 hover:text-gray-900 mb-4 transition-colors">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20"
-                        fill="currentColor">
+                         fill="currentColor">
                         <path fill-rule="evenodd"
-                            d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z"
-                            clip-rule="evenodd" />
+                              d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z"
+                              clip-rule="evenodd"/>
                     </svg>
                     返回
                 </el-button>
@@ -22,8 +26,8 @@
                 <div
                     class="shadow-2xl w-full h-full bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden flex flex-col justify-between">
                     <div ref="resultDisplay"
-                        class="p-4 md:p-6 min-h-[300px] overflow-y-auto whitespace-pre-wrap font-mono text-gray-800"
-                        :class="{ 'animate-pulse': loading && !displayedText }">
+                         class="p-4 md:p-6 min-h-[300px] overflow-y-auto whitespace-pre-wrap font-mono text-gray-800"
+                         :class="{ 'animate-pulse': loading && !displayedText }">
                         {{ displayedText || (loading ? '▍' : '暂无生成结果...') }}
                     </div>
 
@@ -36,42 +40,42 @@
                             生成中...
                         </div>
                         <div v-else class="text-sm text-gray-500">
-                            {{ displayedText ? '生成完成' : '准备就绪' }}
+                            {{ displayedText ? '完成' : '就绪' }}
                         </div>
 
                         <!-- 操作按钮 -->
-                        <div class="flex space-x-2">
+                        <div class="flex space-x-2 overflow-x-auto">
                             <el-button @click="showJsonViewer(sampleJson)"
-                                class="px-3 py-1.5 text-sm rounded-md bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors">
+                                       class="px-3 py-1.5 text-sm rounded-md bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors">
                                 查看所有元数据
                             </el-button>
                             <el-button @click="showJsonViewer(sampleJson)"
-                                class="px-3 py-1.5 text-sm rounded-md bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors">
+                                       class="px-3 py-1.5 text-sm rounded-md bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors">
                                 查看函数
                             </el-button>
                             <el-button @click="showJsonViewer(sampleJson)"
-                                class="px-3 py-1.5 text-sm rounded-md bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors">
+                                       class="px-3 py-1.5 text-sm rounded-md bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors">
                                 查看全局变量
                             </el-button>
                             <el-button @click="showJsonViewer(sampleJson)"
-                                class="px-3 py-1.5 text-sm rounded-md bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors">
+                                       class="px-3 py-1.5 text-sm rounded-md bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors">
                                 查看UDT
                             </el-button>
                             <el-button @click="showJsonViewer(sampleJson)"
-                                class="px-3 py-1.5 text-sm bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors">
+                                       class="px-3 py-1.5 text-sm bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors">
                                 查看测试用例
                             </el-button>
                             <el-button @click="copyResult" :disabled="!displayedText"
-                                class="px-3 py-1.5 text-sm rounded-md transition-colors"
-                                :class="displayedText ? 'bg-blue-100 text-blue-700 hover:bg-blue-200' : 'bg-gray-100 text-gray-400 cursor-not-allowed'">
+                                       class="px-3 py-1.5 text-sm rounded-md transition-colors"
+                                       :class="displayedText ? 'bg-blue-100 text-blue-700 hover:bg-blue-200' : 'bg-gray-100 text-gray-400 cursor-not-allowed'">
                                 复制
                             </el-button>
                             <el-button @click="restartGeneration"
-                                class="px-3 py-1.5 text-sm bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors">
+                                       class="px-3 py-1.5 text-sm bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors">
                                 重新生成
                             </el-button>
                         </div>
-                        <JsonViewer ref="jsonViewerRef" :jsonData="jsonData" title="自定义标题" @close="handleClose" />
+                        <JsonViewer ref="jsonViewerRef" :jsonData="jsonData" title="自定义标题" @close="handleClose"/>
                     </div>
                 </div>
             </div>
@@ -80,8 +84,8 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import {ref, onMounted, onBeforeUnmount, nextTick} from 'vue'
+import {useRoute, useRouter} from 'vue-router'
 import JsonViewer from '../components/json-show.vue'
 
 const jsonViewerRef = ref(null)
@@ -96,31 +100,43 @@ const resultDisplay = ref(null)
 let eventSource = null
 
 // 启动SSE连接
-const startSSEConnection = () => {
-    loading.value = true
-    displayedText.value = ''
+const startSSEConnection = async () => {
+    loading.value = true;
+    displayedText.value = '';
 
-    const { function_name, file_name, reference } = route.query
-    const apiUrl = `/api/run?function_name=${encodeURIComponent(function_name)}&file_name=${encodeURIComponent(file_name)}&reference=${reference}`
+    try {
+        const response = await fetch('/run', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                function_name: route.query.function_name,
+                file_name: route.query.file_name,
+                reference: route.query.reference
+            })
+        });
 
-    eventSource = new EventSource(apiUrl)
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
 
-    eventSource.onmessage = (event) => {
-        if (event.data === 'done') {
-            stopSSEConnection()
-        } else if (event.data.startsWith('data: ')) {
-            displayedText.value += event.data.substring(6) + '\n'
-            scrollToBottom()
+        while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+
+            const chunk = decoder.decode(value);
+            // 解析 SSE 格式
+            chunk.split('\n\n').forEach(line => {
+                if (line.startsWith('data: ')) {
+                    displayedText.value += line.substring(6) + '\n';
+                }
+            });
+            scrollToBottom();
         }
+    } catch (error) {
+        displayedText.value = '生成失败，请重试';
+    } finally {
+        loading.value = false;
     }
-
-    eventSource.onerror = () => {
-        if (!displayedText.value) {
-            displayedText.value = '生成失败，请重试'
-        }
-        stopSSEConnection()
-    }
-}
+};
 
 // 滚动到底部
 const scrollToBottom = () => {
@@ -176,14 +192,14 @@ const showJsonViewer = (myJson) => {
             console.warn('没有可显示的JSON数据')
             return
         }
-        
+
         jsonData.value = myJson
-        
+
         if (!jsonViewerRef.value) {
             console.error('JSON查看器组件未正确初始化')
             return
         }
-        
+
         if (typeof jsonViewerRef.value.open === 'function') {
             jsonViewerRef.value.open()
         } else {
@@ -204,8 +220,8 @@ const sampleJson = {
     name: "示例数据",
     version: "1.0.0",
     items: [
-        { id: 1, name: "项目1" },
-        { id: 2, name: "项目2" }
+        {id: 1, name: "项目1"},
+        {id: 2, name: "项目2"}
     ],
     metadata: {
         createdAt: "2023-05-20",

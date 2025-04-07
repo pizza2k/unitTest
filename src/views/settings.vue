@@ -168,7 +168,7 @@ const handleDirectorySelected = (event) => {
 const fetchConfig = async () => {
     try {
         isLoading.value = true
-        const response = await fetch('/api/config')
+        const response = await fetch('/config')
         if (!response.ok) {
             throw new Error('获取配置失败')
         }
@@ -191,7 +191,7 @@ const fetchConfig = async () => {
 const saveConfig = async () => {
     try {
         isLoading.value = true
-        const response = await fetch('/api/config', {
+        const response = await fetch('/config', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -357,7 +357,7 @@ pre {
 .action-buttons {
     display: flex;
     gap: 12px;
-    margin-top: 0px;
+    margin-top: 0;
     margin-bottom: 20px;
     justify-content: center;
 }
