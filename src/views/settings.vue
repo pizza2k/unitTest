@@ -1,10 +1,7 @@
 <template>
     <div class="flex flex-col h-full justify-between">
-        <div class="el-menu">
-            <headMenu :my_index="2"></headMenu>
-        </div>
-        <div class="config-editor w-full grow place-content-center backdrop-blur-lg">
-            <div class="main-layout px-20">
+        <div class="config-editor w-full grow place-content-center">
+            <div class="main-layout">
                 <!-- 左侧：参数配置区 -->
                 <div class="config-column">
                     <!-- 核心参数 -->
@@ -26,14 +23,8 @@
 
                         <div class="form-group">
                             <label for="threshold">相似度阈值 ({{ config.REFERENCE_THRESHOLD }}):</label>
-                            <input
-                                id="threshold"
-                                type="range"
-                                min="0"
-                                max="1"
-                                step="0.05"
-                                v-model.number="config.REFERENCE_THRESHOLD"
-                            >
+                            <input id="threshold" type="range" min="0" max="1" step="0.05"
+                                v-model.number="config.REFERENCE_THRESHOLD">
                         </div>
                     </section>
 
@@ -90,19 +81,14 @@
             </div>
 
             <!-- 隐藏的文件输入 -->
-            <input
-                type="file"
-                ref="directoryInput"
-                style="display: none"
-                webkitdirectory
-                @change="handleDirectorySelected"
-            >
+            <input type="file" ref="directoryInput" style="display: none" webkitdirectory
+                @change="handleDirectorySelected">
         </div>
     </div>
 </template>
 
 <script setup>
-import {ref, computed, onMounted} from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import headMenu from '../components/HeadMenu.vue';
 
 // 默认配置
@@ -130,6 +116,7 @@ const defaultConfig = {
 const config = ref(JSON.parse(JSON.stringify(defaultConfig)))
 const directoryInput = ref(null)
 const currentPathField = ref('')
+const isLoading = ref(false)
 
 // 处理已有测试用例路径的文本格式
 const testCodePathsText = computed({
@@ -177,23 +164,66 @@ const handleDirectorySelected = (event) => {
     // 重置input，以便可以再次选择同一目录
     event.target.value = ''
 }
+// 从后端获取配置
+const fetchConfig = async () => {
+    try {
+        isLoading.value = true
+        const response = await fetch('/api/config')
+        if (!response.ok) {
+            throw new Error('获取配置失败')
+        }
+        const data = await response.json()
+        if (data) {
+            // 合并默认配置和从后端获取的配置
+            config.value = { ...defaultConfig, ...data }
+            toast.success('配置加载成功')
+        }
+    } catch (error) {
+        console.error('获取配置出错:', error)
+        toast.error('获取配置失败，使用默认配置')
+    } finally {
+        isLoading.value = false
+    }
+}
 
-// 保存配置
-const saveConfig = () => {
-    console.log('保存配置:', config.value)
-    localStorage.setItem('unitTestGenConfig', JSON.stringify(config.value))
-    alert('配置已保存')
+
+// 保存配置到后端
+const saveConfig = async () => {
+    try {
+        isLoading.value = true
+        const response = await fetch('/api/config', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(config.value)
+        })
+
+        if (!response.ok) {
+            throw new Error('保存配置失败')
+        }
+
+        const result = await response.json()
+        toast.success('配置保存成功')
+        console.log('配置保存结果:', result)
+    } catch (error) {
+        console.error('保存配置出错:', error)
+        toast.error('保存配置失败')
+    } finally {
+        isLoading.value = false
+    }
 }
 
 // 导出配置为文件
 const exportConfig = () => {
-    const blob = new Blob([formattedConfig.value], {type: 'application/json'})
+    const blob = new Blob([formattedConfig.value], { type: 'application/json' })
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
     a.download = 'unitTestGen_config.json'
     a.click()
     URL.revokeObjectURL(url)
+    alert('配置已保存')
 }
 
 // 重置配置
@@ -203,19 +233,22 @@ const resetConfig = () => {
     }
 }
 
-// 初始化时加载保存的配置
+// // 初始化时加载保存的配置
+// onMounted(() => {
+//     const savedConfig = localStorage.getItem('unitTestGenConfig')
+//     if (savedConfig) {
+//         config.value = JSON.parse(savedConfig)
+//     }
+// })
+// 初始化时从后端加载配置
 onMounted(() => {
-    const savedConfig = localStorage.getItem('unitTestGenConfig')
-    if (savedConfig) {
-        config.value = JSON.parse(savedConfig)
-    }
+    fetchConfig()
 })
 </script>
 
 
 <style scoped>
 .config-editor {
-    margin: 10px;
     font-family: Arial, sans-serif;
 }
 
@@ -340,17 +373,20 @@ button {
 }
 
 .save-btn {
-    background: hsl(120, 39%, 54%); /* 降低饱和度 */
+    background: hsl(120, 39%, 54%);
+    /* 降低饱和度 */
     color: white;
 }
 
 .reset-btn {
-    background: hsl(0, 69%, 58%); /* 降低饱和度 */
+    background: hsl(0, 69%, 58%);
+    /* 降低饱和度 */
     color: white;
 }
 
 .export-btn {
-    background: hsl(207, 72%, 55%); /* 降低饱和度 */
+    background: hsl(207, 72%, 55%);
+    /* 降低饱和度 */
     color: white;
 }
 
@@ -358,137 +394,3 @@ button:hover {
     opacity: 0.9;
 }
 </style>
-
-<!-- <style scoped>
-
-
-.config-editor {
-    margin: 10px;
-    font-family: Arial, sans-serif;
-}
-
-.main-layout {
-    display: flex;
-    gap: 30px;
-}
-
-.config-column {
-    flex: 1;
-    min-width: 0;
-}
-
-.preview-column {
-    flex: 1;
-    min-width: 0;
-}
-
-.config-section {
-    background: #deebf9;
-    padding: 20px;
-    border-radius: 8px;
-    margin-bottom: 25px;
-}
-
-.form-group {
-    margin-bottom: 18px;
-}
-
-label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: bold;
-    font-size: 14px;
-}
-
-input[type="text"],
-select,
-textarea {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #8f4d4d;
-    border-radius: 4px;
-    font-size: 14px;
-}
-
-.path-input-group {
-    display: flex;
-    gap: 8px;
-}
-
-.path-input-group input {
-    flex: 1;
-}
-
-.path-input-group button {
-    padding: 0 15px;
-}
-
-textarea {
-    min-height: 100px;
-    resize: vertical;
-}
-
-input[type="range"] {
-    width: 100%;
-    margin-top: 5px;
-}
-
-.preview-section {
-    background: #c9d5d6;
-    padding: 20px;
-    border-radius: 8px;
-    height: calc(100% - 40px);
-    display: flex;
-    flex-direction: column;
-}
-
-.preview-section h2 {
-    margin-top: 0;
-}
-
-pre {
-    white-space: pre-wrap;
-    background: white;
-    padding: 15px;
-    border-radius: 4px;
-    flex-grow: 1;
-    overflow-y: auto;
-    font-size: 13px;
-    line-height: 1.4;
-}
-
-.action-buttons {
-    display: flex;
-    gap: 12px;
-    margin-top: 25px;
-    justify-content: center;
-}
-
-button {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 14px;
-    transition: background-color 0.2s;
-}
-
-.save-btn {
-    background: #4CAF50;
-    color: white;
-}
-
-.reset-btn {
-    background: #f44336;
-    color: white;
-}
-
-.export-btn {
-    background: #2196F3;
-    color: white;
-}
-
-button:hover {
-    opacity: 0.9;
-}
-</style> -->

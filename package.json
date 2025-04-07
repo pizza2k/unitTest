@@ -19,6 +19,7 @@
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.2.1",
+    "daisyui": "^5.0.12",
     "vite": "^6.2.0"
   }
 }

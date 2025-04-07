@@ -7,9 +7,9 @@ const routes = [
         component: () => import('../views/main.vue'),
     },
     {
-        path: '/settings',
-        name: 'settings',
-        component: () => import('../views/settings.vue'),
+        path: '/result',
+        name: 'result',
+        component: () => import('../views/result.vue'),
     },
     {
         path: '/:pathMatch(.*)*',
@@ -20,7 +20,7 @@ const routes = [
     {
         path: '/jsonDemo',
         name: 'JsonDemo',
-        component: () => import('../views/json.vue'),
+        component: () => import('../components/json.vue'),
     }
 ];
 
