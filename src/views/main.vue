@@ -1,9 +1,12 @@
 <template>
     <div class="min-h-screen w-screen place-content-center flex justify-center items-center">
         <div class="w-3/5 h-full mx-auto bg-white rounded-2xl shadow-lg p-8 space-y-6 mb-10">
-            <div class="flex items-center pl-25">
+            <div class="flex items-center justify-center">
                 <img src="../../public/icon/icon.png" alt="LOGO" class="w-48">
                 <h1 class="text-3xl font-bold text-center pt-8">AeroTest 航宇智测</h1>
+            </div>
+            <div class="text-right -mt-2">
+                <p class="text-gray-500 italic mt-1">——基于大语言模型的航空航天软件测试生成</p> 
             </div>
             <div class="space-y-4">
                 <!-- 仓库路径 -->
