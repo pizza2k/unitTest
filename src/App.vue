@@ -7,7 +7,7 @@
 
 <style>
 .background {
-    background-image: url("public/img/home/bg.png");
+    background-image: url("../public/img/home/bg.png");
     background-repeat: no-repeat;
     background-size: cover;
 }
