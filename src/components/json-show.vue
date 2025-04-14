@@ -2,7 +2,7 @@
     <div v-if="isVisible" class="json-viewer-modal">
       <div class="json-viewer-content">
         <div class="json-viewer-header">
-          <h3>中间结果查看</h3>
+          <h3>{{title}}</h3>
           <button @click="close" class="close-btn">&times;</button>
         </div>
         <div class="json-viewer-body">
@@ -18,7 +18,7 @@
   
   <script setup>
   import { ref, computed, onMounted, onUnmounted } from 'vue'
-  
+
   const props = defineProps({
     jsonData: {
       type: [Object, Array, String],

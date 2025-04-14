@@ -6,7 +6,7 @@
                 <h1 class="text-3xl font-bold text-center pt-8">AeroTest 航宇智测</h1>
             </div>
             <div class="text-right -mt-2">
-                <p class="text-gray-500 italic mt-1">——基于大语言模型的航空航天软件测试生成</p> 
+                <p class="text-gray-500 italic mt-1">——基于大语言模型的航空航天软件测试生成</p>
             </div>
             <div class="space-y-4">
                 <!-- 仓库路径 -->
@@ -93,7 +93,7 @@
                 </div>
                 
                 <!-- 开始分析按钮 -->
-                <router-link 
+                <router-link
                     :to="{
                         name: 'result',
                         query: {

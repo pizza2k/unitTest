@@ -3,8 +3,7 @@
         <div class="w-full h-full flex flex-col px-30 justify-center backdrop-blur-lg">
             <div class="absolute top-12 right-1/3 flex items-center justify-center">
                 <div class="backdrop-blur-lg bg-white w-28 rounded-2xl mr-5 pr-2 mt-6">
-                    <img src="../../public/icon/icon.png" alt="LOGO"
-                         class="w-28"/>
+                    <img src="../../public/icon/icon.png" alt="LOGO" class="w-28"/>
                 </div>
                 <h1 class="hidden xl:block text-md font-bold text-center pt-8 text-black">AeroTest</h1>
                 <h1 class="hidden md:block text-md font-bold text-center pt-8 text-black">航宇智测</h1>
@@ -44,38 +43,48 @@
                         </div>
 
                         <!-- 操作按钮 -->
-                        <div class="flex space-x-2 overflow-x-auto">
-                            <el-button @click="showJsonViewer(sampleJson)"
-                                       class="px-3 py-1.5 text-sm rounded-md bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors">
-                                查看所有元数据
-                            </el-button>
-                            <el-button @click="showJsonViewer(sampleJson)"
-                                       class="px-3 py-1.5 text-sm rounded-md bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors">
-                                查看函数
-                            </el-button>
-                            <el-button @click="showJsonViewer(sampleJson)"
-                                       class="px-3 py-1.5 text-sm rounded-md bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors">
-                                查看全局变量
-                            </el-button>
-                            <el-button @click="showJsonViewer(sampleJson)"
-                                       class="px-3 py-1.5 text-sm rounded-md bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors">
-                                查看UDT
-                            </el-button>
-                            <el-button @click="showJsonViewer(sampleJson)"
-                                       class="px-3 py-1.5 text-sm bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors">
-                                查看测试用例
-                            </el-button>
-                            <el-button @click="copyResult" :disabled="!displayedText"
-                                       class="px-3 py-1.5 text-sm rounded-md transition-colors"
-                                       :class="displayedText ? 'bg-blue-100 text-blue-700 hover:bg-blue-200' : 'bg-gray-100 text-gray-400 cursor-not-allowed'">
+                        <div class="flex space-x-4 ml-3 z-50">
+                                <label @click="getInfo('/all_metainfo')" class="btn bg-gray-100 text-gray-700 hover:bg-gray-200">
+                                    查看全部元信息
+                                </label>
+                            <!-- 元数据菜单 -->
+                            <div class="dropdown dropdown-top">
+                                <label tabindex="0" class="btn bg-gray-100 text-gray-700 hover:bg-gray-200">
+                                    查看构建元数据
+                                </label>
+                                <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52 z-50 mb-2">
+                                    <li><a @click="getInfo('/function_metainfo')">函数元数据</a></li>
+                                    <li><a @click="getInfo('/global_variable_metainfo')">全局变量元数据</a></li>
+                                    <li><a @click="getInfo('/udt_metainfo')">UDT元数据</a></li>
+                                    <li><a @click="getInfo('/testcase_metainfo')">测试用例</a></li>
+                                </ul>
+                            </div>
+
+                            <!-- 测试用例菜单 -->
+                            <div class="dropdown dropdown-top">
+                                <label tabindex="0" class="btn bg-gray-100 text-gray-700 hover:bg-gray-200">
+                                    查看中间分析结果
+                                </label>
+                                <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52 z-50 mb-2">
+                                    <li><a @click="getInfo('/testcase_analysis_result')">测试用例分析结果</a></li>
+                                    <li><a @click="getInfo('/function_similarity')">函数相似度</a></li>
+                                    <li><a @click="getInfo('/context_analysis_result')">内容分析结果</a></li>
+                                </ul>
+                            </div>
+
+
+                            <!-- 操作按钮 -->
+                            <button @click="copyResult" :disabled="!displayedText"
+                                    class="btn"
+                                    :class="displayedText ? 'bg-blue-100 text-blue-700 hover:bg-blue-200' : 'bg-gray-100 text-gray-400 cursor-not-allowed'">
                                 复制
-                            </el-button>
-                            <el-button @click="restartGeneration"
-                                       class="px-3 py-1.5 text-sm bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors">
+                            </button>
+                            <button @click="restartGeneration" class="btn bg-gray-100 text-gray-700 hover:bg-gray-200">
                                 重新生成
-                            </el-button>
+                            </button>
                         </div>
-                        <JsonViewer ref="jsonViewerRef" :jsonData="jsonData" title="自定义标题" @close="handleClose"/>
+
+                        <JsonViewer ref="jsonViewerRef" :jsonData="jsonData" :title="title" @close="handleClose"/>
                     </div>
                 </div>
             </div>
@@ -84,12 +93,13 @@
 </template>
 
 <script setup>
-import {ref, onMounted, onBeforeUnmount, nextTick} from 'vue'
+import {nextTick, onBeforeUnmount, onMounted, ref} from 'vue'
 import {useRoute, useRouter} from 'vue-router'
 import JsonViewer from '../components/json-show.vue'
 
 const jsonViewerRef = ref(null)
 const jsonData = ref(null)
+const title = ref('')
 const route = useRoute()
 const router = useRouter()
 
@@ -107,7 +117,7 @@ const startSSEConnection = async () => {
     try {
         const response = await fetch('/run', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
                 function_name: route.query.function_name,
                 file_name: route.query.file_name,
@@ -119,7 +129,7 @@ const startSSEConnection = async () => {
         const decoder = new TextDecoder();
 
         while (true) {
-            const { done, value } = await reader.read();
+            const {done, value} = await reader.read();
             if (done) break;
 
             const chunk = decoder.decode(value);
@@ -186,6 +196,34 @@ const goBack = () => {
 //     jsonViewerRef.value.open()
 // }
 
+const sampleJson = ref({
+    "ERROR": "获取失败"
+})
+const urlToLabelMap = new Map([
+    ["/all_metainfo", "查看全部元信息"],
+    ["/function_metainfo", "函数元数据"],
+    ["/global_variable_metainfo", "全局变量元数据"],
+    ["/udt_metainfo", "UDT元数据"],
+    ["/testcase_metainfo", "测试用例"],
+    ["/testcase_analysis_result", "测试用例分析结果"],
+    ["/function_similarity", "函数相似度"],
+    ["/context_analysis_result", "内容分析结果"],
+]);
+const getInfo = async (url) => {
+    try {
+        const response = await fetch(url, {method: "GET"});
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        sampleJson.value = await response.json(); // 将 API 返回的数据存入 sampleJson
+    } catch (error) {
+        console.error(`Error fetching ${url}$: `, error);
+    }
+    title.value=urlToLabelMap.get(url);
+    showJsonViewer(sampleJson); // 显示 JSON 数据
+};
+
+
 const showJsonViewer = (myJson) => {
     try {
         if (!myJson) {
@@ -214,19 +252,6 @@ const showJsonViewer = (myJson) => {
 
 const handleClose = () => {
     console.log('JSON查看器已关闭')
-}
-
-const sampleJson = {
-    name: "示例数据",
-    version: "1.0.0",
-    items: [
-        {id: 1, name: "项目1"},
-        {id: 2, name: "项目2"}
-    ],
-    metadata: {
-        createdAt: "2023-05-20",
-        updatedAt: "2023-05-21"
-    }
 }
 
 // 生命周期
