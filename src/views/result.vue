@@ -220,13 +220,14 @@ const getInfo = async (url) => {
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
-        jsonContent = await response.json(); // 将 API 返回的数据存入 sampleJson
+        jsonContent = await response.json(); // 将 API 返回的数据存入
+        console.log(jsonContent)
     } catch (error) {
         console.error(`Error fetching ${url}$: `, error);
-        jsonContent=sampleJson;
+        jsonContent=sampleJson.value;
     }
     title.value = urlToLabelMap.get(url);
-    showJsonViewer(jsonContent.value); // 显示 JSON 数据
+    showJsonViewer(jsonContent); // 显示 JSON 数据
 };
 
 
