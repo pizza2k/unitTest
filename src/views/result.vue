@@ -110,13 +110,13 @@ const router = useRouter()
 const displayedText = ref('')
 const loading = ref(false)
 const resultDisplay = ref(null)
-let eventSource = null
+let abortController = null
 
 // 启动SSE连接
 const startSSEConnection = async () => {
     loading.value = true;
     displayedText.value = '';
-
+    let abortController = new AbortController();
     try {
         const response = await fetch('/run', {
             method: 'POST',
@@ -125,7 +125,8 @@ const startSSEConnection = async () => {
                 function_name: route.query.function_name,
                 file_name: route.query.file_name,
                 reference: route.query.reference
-            })
+            }),
+            signal: abortController.signal,
         });
 
         const reader = response.body.getReader();
@@ -145,6 +146,10 @@ const startSSEConnection = async () => {
             scrollToBottom();
         }
     } catch (error) {
+        if (error.name === 'AbortError') {
+            console.log('SSE 连接已被中止');
+        }
+        else
         displayedText.value = '生成失败，请重试';
     } finally {
         loading.value = false;
@@ -162,9 +167,9 @@ const scrollToBottom = () => {
 
 // 停止连接
 const stopSSEConnection = () => {
-    if (eventSource) {
-        eventSource.close()
-        eventSource = null
+    if (abortController) {
+        abortController.abort()
+        abortController = null
     }
     loading.value = false
 }
@@ -224,7 +229,7 @@ const getInfo = async (url) => {
         console.log(jsonContent)
     } catch (error) {
         console.error(`Error fetching ${url}$: `, error);
-        jsonContent=sampleJson.value;
+        jsonContent = sampleJson.value;
     }
     title.value = urlToLabelMap.get(url);
     showJsonViewer(jsonContent); // 显示 JSON 数据
