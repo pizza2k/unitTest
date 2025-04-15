@@ -44,18 +44,20 @@
 
                         <!-- 操作按钮 -->
                         <div class="flex space-x-4 ml-3 z-50">
-                                <label @click="getInfo('/all_metainfo')" class="btn bg-gray-100 text-gray-700 hover:bg-gray-200">
-                                    查看全部元信息
-                                </label>
-                            <!-- 元数据菜单 -->
+                            <label @click="getInfo('/all_metainfo')"
+                                   class="btn bg-gray-100 text-gray-700 hover:bg-gray-200">
+                                查看全部元信息
+                            </label>
+                            <!-- 元信息菜单 -->
                             <div class="dropdown dropdown-top">
                                 <label tabindex="0" class="btn bg-gray-100 text-gray-700 hover:bg-gray-200">
-                                    查看构建元数据
+                                    查看构建元信息
                                 </label>
-                                <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52 z-50 mb-2">
-                                    <li><a @click="getInfo('/function_metainfo')">函数元数据</a></li>
-                                    <li><a @click="getInfo('/global_variable_metainfo')">全局变量元数据</a></li>
-                                    <li><a @click="getInfo('/udt_metainfo')">UDT元数据</a></li>
+                                <ul tabindex="0"
+                                    class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52 z-50 mb-2">
+                                    <li><a @click="getInfo('/function_metainfo')">函数元信息</a></li>
+                                    <li><a @click="getInfo('/global_variable_metainfo')">全局变量元信息</a></li>
+                                    <li><a @click="getInfo('/udt_metainfo')">UDT元信息</a></li>
                                     <li><a @click="getInfo('/testcase_metainfo')">测试用例</a></li>
                                 </ul>
                             </div>
@@ -65,10 +67,11 @@
                                 <label tabindex="0" class="btn bg-gray-100 text-gray-700 hover:bg-gray-200">
                                     查看中间分析结果
                                 </label>
-                                <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52 z-50 mb-2">
+                                <ul tabindex="0"
+                                    class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52 z-50 mb-2">
                                     <li><a @click="getInfo('/testcase_analysis_result')">测试用例分析结果</a></li>
                                     <li><a @click="getInfo('/function_similarity')">函数相似度</a></li>
-                                    <li><a @click="getInfo('/context_analysis_result')">内容分析结果</a></li>
+                                    <li><a @click="getInfo('/context_analysis_result')">上下文分析结果</a></li>
                                 </ul>
                             </div>
 
@@ -98,7 +101,7 @@ import {useRoute, useRouter} from 'vue-router'
 import JsonViewer from '../components/json-show.vue'
 
 const jsonViewerRef = ref(null)
-const jsonData = ref(null)
+const jsonData = ref({"ERROR": "获取失败"})
 const title = ref('')
 const route = useRoute()
 const router = useRouter()
@@ -201,26 +204,29 @@ const sampleJson = ref({
 })
 const urlToLabelMap = new Map([
     ["/all_metainfo", "查看全部元信息"],
-    ["/function_metainfo", "函数元数据"],
-    ["/global_variable_metainfo", "全局变量元数据"],
-    ["/udt_metainfo", "UDT元数据"],
+    ["/function_metainfo", "函数元信息"],
+    ["/global_variable_metainfo", "全局变量元信息"],
+    ["/udt_metainfo", "UDT元信息"],
     ["/testcase_metainfo", "测试用例"],
     ["/testcase_analysis_result", "测试用例分析结果"],
     ["/function_similarity", "函数相似度"],
-    ["/context_analysis_result", "内容分析结果"],
+    ["/context_analysis_result", "上下文分析结果"],
 ]);
+
 const getInfo = async (url) => {
+    let jsonContent;
     try {
         const response = await fetch(url, {method: "GET"});
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
-        sampleJson.value = await response.json(); // 将 API 返回的数据存入 sampleJson
+        jsonContent = await response.json(); // 将 API 返回的数据存入 sampleJson
     } catch (error) {
         console.error(`Error fetching ${url}$: `, error);
+        jsonContent=sampleJson;
     }
-    title.value=urlToLabelMap.get(url);
-    showJsonViewer(sampleJson); // 显示 JSON 数据
+    title.value = urlToLabelMap.get(url);
+    showJsonViewer(jsonContent.value); // 显示 JSON 数据
 };
 
 
